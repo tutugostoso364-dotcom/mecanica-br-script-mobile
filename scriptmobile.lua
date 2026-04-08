@@ -2,7 +2,7 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Mecânica BR - MOBILE",
+   Name = "Mecânica BR - MOBILE PRO",
    LoadingTitle = "Carregando...",
    LoadingSubtitle = "Versão Mobile",
 
@@ -29,6 +29,7 @@ local PlayerTab = Window:CreateTab("Player", 4483362458)
 local player = game.Players.LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
 local root = char:WaitForChild("HumanoidRootPart")
+local humanoid = char:WaitForChild("Humanoid")
 
 -- VARIÁVEIS
 local caixas = {}
@@ -119,17 +120,26 @@ game:GetService("RunService").Stepped:Connect(function()
     end
 end)
 
--- 🕊️ FLY AUTOMÁTICO (MOBILE)
+-- 🕊️ FLY MOBILE (IGUAL PC)
 local bv
 
 game:GetService("RunService").RenderStepped:Connect(function()
     if flying then
+        
         if not bv then
-            bv = Instance.new("BodyVelocity", root)
+            bv = Instance.new("BodyVelocity")
             bv.MaxForce = Vector3.new(9e9,9e9,9e9)
+            bv.Parent = root
         end
 
-        bv.Velocity = root.CFrame.LookVector * flySpeed
+        local moveDir = humanoid.MoveDirection
+
+        if moveDir.Magnitude > 0 then
+            bv.Velocity = moveDir * flySpeed
+        else
+            bv.Velocity = Vector3.zero
+        end
+
     else
         if bv then
             bv:Destroy()
@@ -138,10 +148,8 @@ game:GetService("RunService").RenderStepped:Connect(function()
     end
 end)
 
--- FLY TO
+-- FLY TO (AUTO FARM)
 local function flyTo(pos)
-    flying = false
-    
     local bv = Instance.new("BodyVelocity", root)
     bv.MaxForce = Vector3.new(9e9,9e9,9e9)
 
@@ -203,7 +211,7 @@ MainTab:CreateToggle({
 })
 
 PlayerTab:CreateToggle({
-   Name = "🕊️ Fly Mobile",
+   Name = "🕊️ Fly Mobile (Joystick)",
    CurrentValue = false,
    Callback = function(v)
        flying = v
