@@ -61,7 +61,7 @@ end
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Mecânica BR - MOBILE ULTRA",
+   Name = "Mecânica BR - MOBILE GOD",
    LoadingTitle = "Carregando...",
    LoadingSubtitle = "Full Script",
 
@@ -176,8 +176,28 @@ game:GetService("RunService").Stepped:Connect(function()
     end
 end)
 
--- 🕊️ FLY MOBILE REAL (CORRIGIDO)
+-- 🕊️ FLY MOBILE CONTROLE TOTAL
 local bv
+local gui = Instance.new("ScreenGui", player.PlayerGui)
+
+local upBtn = Instance.new("TextButton", gui)
+upBtn.Size = UDim2.new(0,80,0,80)
+upBtn.Position = UDim2.new(0.85,0,0.6,0)
+upBtn.Text = "⬆️"
+
+local downBtn = Instance.new("TextButton", gui)
+downBtn.Size = UDim2.new(0,80,0,80)
+downBtn.Position = UDim2.new(0.85,0,0.75,0)
+downBtn.Text = "⬇️"
+
+local up = false
+local down = false
+
+upBtn.MouseButton1Down:Connect(function() up = true end)
+upBtn.MouseButton1Up:Connect(function() up = false end)
+
+downBtn.MouseButton1Down:Connect(function() down = true end)
+downBtn.MouseButton1Up:Connect(function() down = false end)
 
 game:GetService("RunService").RenderStepped:Connect(function()
     if flying then
@@ -189,16 +209,16 @@ game:GetService("RunService").RenderStepped:Connect(function()
         end
 
         local moveDir = humanoid.MoveDirection
+        local y = 0
 
-        if moveDir.Magnitude > 0 then
-            bv.Velocity = Vector3.new(
-                moveDir.X * flySpeed,
-                flySpeed * 0.3,
-                moveDir.Z * flySpeed
-            )
-        else
-            bv.Velocity = Vector3.new(0, 2, 0)
-        end
+        if up then y = flySpeed end
+        if down then y = -flySpeed end
+
+        bv.Velocity = Vector3.new(
+            moveDir.X * flySpeed,
+            y,
+            moveDir.Z * flySpeed
+        )
 
     else
         if bv then
@@ -271,7 +291,7 @@ MainTab:CreateToggle({
 })
 
 PlayerTab:CreateToggle({
-   Name = "🕊️ Fly Mobile REAL",
+   Name = "🕊️ Fly Mobile TOTAL",
    CurrentValue = false,
    Callback = function(v)
        flying = v
