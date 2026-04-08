@@ -1,14 +1,71 @@
--- RAYFIELD + KEY SYSTEM
+-- 🔥 OTIMIZAÇÃO MOBILE EXTREMA
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+settings().Rendering.QualityLevel = "Level01"
+
+Lighting.GlobalShadows = false
+Lighting.FogEnd = 1e10
+Lighting.Brightness = 0
+
+for _, v in pairs(Lighting:GetChildren()) do
+    if v:IsA("PostEffect") then
+        v.Enabled = false
+    end
+end
+
+for _, v in pairs(workspace:GetDescendants()) do
+    if v:IsA("BasePart") then
+        v.Material = Enum.Material.Plastic
+        v.Reflectance = 0
+        v.CastShadow = false
+    end
+    
+    if v:IsA("Decal") or v:IsA("Texture") then
+        v:Destroy()
+    end
+    
+    if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+        v:Destroy()
+    end
+end
+
+workspace.DescendantAdded:Connect(function(v)
+    if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+        v:Destroy()
+    end
+end)
+
+for _, plr in pairs(Players:GetPlayers()) do
+    if plr ~= player and plr.Character then
+        plr.Character:Destroy()
+    end
+end
+
+Players.PlayerAdded:Connect(function(plr)
+    if plr ~= player then
+        plr.CharacterAdded:Connect(function(char)
+            char:Destroy()
+        end)
+    end
+end)
+
+for _, v in pairs(workspace:GetDescendants()) do
+    if v:IsA("Sound") then
+        v.Volume = 0
+    end
+end
+
+-- 🚀 RAYFIELD + KEY
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Mecânica BR - MOBILE PRO",
+   Name = "Mecânica BR - MOBILE ULTRA",
    LoadingTitle = "Carregando...",
-   LoadingSubtitle = "Versão Mobile",
+   LoadingSubtitle = "Full Script",
 
-   ConfigurationSaving = {
-      Enabled = false,
-   },
+   ConfigurationSaving = {Enabled = false},
 
    KeySystem = true,
    KeySettings = {
@@ -26,7 +83,6 @@ local MainTab = Window:CreateTab("Caixas", 4483362458)
 local PlayerTab = Window:CreateTab("Player", 4483362458)
 
 -- PLAYER
-local player = game.Players.LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
 local root = char:WaitForChild("HumanoidRootPart")
 local humanoid = char:WaitForChild("Humanoid")
@@ -34,7 +90,7 @@ local humanoid = char:WaitForChild("Humanoid")
 -- VARIÁVEIS
 local caixas = {}
 local autoFarm = false
-local flySpeed = 1000
+local flySpeed = 800
 local noclip = false
 local flying = false
 
@@ -111,8 +167,8 @@ end)
 
 -- NOCLIP
 game:GetService("RunService").Stepped:Connect(function()
-    if noclip and player.Character then
-        for _, v in pairs(player.Character:GetDescendants()) do
+    if noclip then
+        for _, v in pairs(char:GetDescendants()) do
             if v:IsA("BasePart") then
                 v.CanCollide = false
             end
@@ -120,7 +176,7 @@ game:GetService("RunService").Stepped:Connect(function()
     end
 end)
 
--- 🕊️ FLY MOBILE (IGUAL PC)
+-- 🕊️ FLY MOBILE REAL (CORRIGIDO)
 local bv
 
 game:GetService("RunService").RenderStepped:Connect(function()
@@ -135,9 +191,13 @@ game:GetService("RunService").RenderStepped:Connect(function()
         local moveDir = humanoid.MoveDirection
 
         if moveDir.Magnitude > 0 then
-            bv.Velocity = moveDir * flySpeed
+            bv.Velocity = Vector3.new(
+                moveDir.X * flySpeed,
+                flySpeed * 0.3,
+                moveDir.Z * flySpeed
+            )
         else
-            bv.Velocity = Vector3.zero
+            bv.Velocity = Vector3.new(0, 2, 0)
         end
 
     else
@@ -148,7 +208,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
     end
 end)
 
--- FLY TO (AUTO FARM)
+-- FLY TO
 local function flyTo(pos)
     local bv = Instance.new("BodyVelocity", root)
     bv.MaxForce = Vector3.new(9e9,9e9,9e9)
@@ -211,7 +271,7 @@ MainTab:CreateToggle({
 })
 
 PlayerTab:CreateToggle({
-   Name = "🕊️ Fly Mobile (Joystick)",
+   Name = "🕊️ Fly Mobile REAL",
    CurrentValue = false,
    Callback = function(v)
        flying = v
@@ -222,7 +282,7 @@ PlayerTab:CreateSlider({
    Name = "🚀 Speed",
    Range = {50, 1000},
    Increment = 50,
-   CurrentValue = 1000,
+   CurrentValue = 800,
    Callback = function(v)
        flySpeed = v
    end
