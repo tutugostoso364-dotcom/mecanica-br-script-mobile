@@ -81,6 +81,7 @@ local Window = Rayfield:CreateWindow({
 
 local MainTab = Window:CreateTab("Caixas", 4483362458)
 local PlayerTab = Window:CreateTab("Player", 4483362458)
+local TeleportTab = Window:CreateTab("Teleporte", 4483362458)
 
 -- PLAYER
 local char = player.Character or player.CharacterAdded:Wait()
@@ -176,7 +177,7 @@ game:GetService("RunService").Stepped:Connect(function()
     end
 end)
 
--- 🕊️ FLY MOBILE CONTROLE TOTAL
+-- 🕊️ FLY MOBILE TOTAL
 local bv
 local gui = Instance.new("ScreenGui", player.PlayerGui)
 
@@ -228,47 +229,13 @@ game:GetService("RunService").RenderStepped:Connect(function()
     end
 end)
 
--- FLY TO
-local function flyTo(pos)
-    local bv = Instance.new("BodyVelocity", root)
-    bv.MaxForce = Vector3.new(9e9,9e9,9e9)
-
-    while (root.Position - pos).Magnitude > 5 do
-        bv.Velocity = (pos - root.Position).Unit * flySpeed
-        task.wait()
-    end
-
-    bv:Destroy()
-end
-
--- AUTO FARM
-task.spawn(function()
-    while true do
-        if autoFarm and pallet and entrega then
-            
-            noclip = true
-
-            flyTo(pallet.Position)
-            task.wait(0.5)
-
-            pegarTudo()
-            task.wait(0.5)
-
-            flyTo(entrega.Position)
-            task.wait(1)
-
-            soltar()
-            task.wait(1)
-
-            flyTo(pallet.Position)
-            task.wait(1)
-        else
-            noclip = false
-        end
-
-        task.wait(0.2)
-    end
-end)
+-- 🚀 TELEPORT
+TeleportTab:CreateButton({
+   Name = "📍 Ir para ponto secreto",
+   Callback = function()
+       root.CFrame = CFrame.new(-25678.73, 32.98, -5880.50)
+   end
+})
 
 -- UI
 
