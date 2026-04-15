@@ -1,4 +1,4 @@
--- 🔥 OTIMIZAÇÃO MOBILE EXTREMA
+-- 🔥 OTIMIZAÇÃO MOBILE
 local Lighting = game:GetService("Lighting")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
@@ -10,72 +10,30 @@ Lighting.FogEnd = 1e10
 Lighting.Brightness = 0
 
 for _, v in pairs(Lighting:GetChildren()) do
-    if v:IsA("PostEffect") then
-        v.Enabled = false
-    end
+    if v:IsA("PostEffect") then v.Enabled = false end
 end
 
 for _, v in pairs(workspace:GetDescendants()) do
     if v:IsA("BasePart") then
         v.Material = Enum.Material.Plastic
-        v.Reflectance = 0
         v.CastShadow = false
     end
-    
-    if v:IsA("Decal") or v:IsA("Texture") then
-        v:Destroy()
-    end
-    
-    if v:IsA("ParticleEmitter") or v:IsA("Trail") then
-        v:Destroy()
-    end
+    if v:IsA("Decal") or v:IsA("Texture") then v:Destroy() end
 end
 
-workspace.DescendantAdded:Connect(function(v)
-    if v:IsA("ParticleEmitter") or v:IsA("Trail") then
-        v:Destroy()
-    end
-end)
-
-for _, plr in pairs(Players:GetPlayers()) do
-    if plr ~= player and plr.Character then
-        plr.Character:Destroy()
-    end
-end
-
-Players.PlayerAdded:Connect(function(plr)
-    if plr ~= player then
-        plr.CharacterAdded:Connect(function(char)
-            char:Destroy()
-        end)
-    end
-end)
-
-for _, v in pairs(workspace:GetDescendants()) do
-    if v:IsA("Sound") then
-        v.Volume = 0
-    end
-end
-
--- 🚀 RAYFIELD + KEY
+-- 🚀 RAYFIELD
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Mecânica BR - MOBILE GOD",
+   Name = "Mecânica BR - MOBILE MONEY",
    LoadingTitle = "Carregando...",
-   LoadingSubtitle = "Full Script",
-
-   ConfigurationSaving = {Enabled = false},
+   LoadingSubtitle = "Full Mobile",
 
    KeySystem = true,
    KeySettings = {
-      Title = "Sistema de Key",
-      Subtitle = "Digite a key",
-      Note = "Key necessária",
-      FileName = "MecanicaBR_Key",
-      SaveKey = false,
-      GrabKeyFromSite = false,
-      Key = {"usuario.2026"}
+      Title = "Key",
+      Subtitle = "Digite",
+      Key = {"deathpro.1"}
    }
 })
 
@@ -88,69 +46,52 @@ local char = player.Character or player.CharacterAdded:Wait()
 local root = char:WaitForChild("HumanoidRootPart")
 local humanoid = char:WaitForChild("Humanoid")
 
--- VARIÁVEIS
+-- VAR
 local caixas = {}
 local autoFarm = false
 local flySpeed = 800
-local noclip = false
 local flying = false
+local noclip = false
 
-local pallet = nil
-local entrega = nil
+local pallet, entrega
 
--- DETECTAR LOCAIS
+-- DETECTAR
 for _, v in ipairs(workspace:GetDescendants()) do
     if v:IsA("BasePart") then
         local n = v.Name:lower()
-
-        if not pallet and n:find("pallet") then
-            pallet = v
-        end
-
-        if not entrega and (n:find("delivery") or n:find("entrega") or n:find("sell") or n:find("drop")) then
-            entrega = v
-        end
+        if not pallet and n:find("pallet") then pallet = v end
+        if not entrega and (n:find("entrega") or n:find("delivery")) then entrega = v end
     end
 end
 
--- 📦 PEGAR ATÉ 20 CAIXAS
+-- PEGAR CAIXAS
 local function pegarTudo()
     caixas = {}
     local count = 0
 
     for _, v in ipairs(workspace:GetDescendants()) do
-        if v:IsA("BasePart") then
-            local nome = v.Name:lower()
-
-            if nome:find("box") or nome:find("caixa") then
-                local dist = (v.Position - root.Position).Magnitude
-
-                if dist <= 20 and v.Size.Magnitude < 15 then
-                    v.Anchored = true
-                    v.CanCollide = false
-
-                    table.insert(caixas, v)
-                    count += 1
-
-                    if count >= 20 then break end
-                end
+        if v:IsA("BasePart") and (v.Name:lower():find("box") or v.Name:lower():find("caixa")) then
+            if (v.Position - root.Position).Magnitude <= 20 then
+                v.Anchored = true
+                v.CanCollide = false
+                table.insert(caixas, v)
+                count += 1
+                if count >= 20 then break end
             end
         end
     end
 end
 
--- SEGURAR CAIXAS
+-- SEGURAR
 game:GetService("RunService").RenderStepped:Connect(function()
-    for i, v in ipairs(caixas) do
-        local x = (i % 4) * 2 - 3
-        local y = math.floor(i / 4) * 2
-        v.CFrame = root.CFrame * CFrame.new(x, y, -3)
+    for i,v in ipairs(caixas) do
+        v.CFrame = root.CFrame * CFrame.new((i%4)*2-3, math.floor(i/4)*2, -3)
     end
 end)
 
 -- SOLTAR
 local function soltar()
-    for _, v in ipairs(caixas) do
+    for _,v in ipairs(caixas) do
         v.Anchored = false
         v.CanCollide = true
     end
@@ -169,15 +110,13 @@ end)
 -- NOCLIP
 game:GetService("RunService").Stepped:Connect(function()
     if noclip then
-        for _, v in pairs(char:GetDescendants()) do
-            if v:IsA("BasePart") then
-                v.CanCollide = false
-            end
+        for _,v in pairs(char:GetDescendants()) do
+            if v:IsA("BasePart") then v.CanCollide = false end
         end
     end
 end)
 
--- 🕊️ FLY MOBILE TOTAL
+-- 🕊️ FLY MOBILE
 local bv
 local gui = Instance.new("ScreenGui", player.PlayerGui)
 
@@ -191,86 +130,81 @@ downBtn.Size = UDim2.new(0,80,0,80)
 downBtn.Position = UDim2.new(0.85,0,0.75,0)
 downBtn.Text = "⬇️"
 
-local up = false
-local down = false
+local up,down=false,false
 
-upBtn.MouseButton1Down:Connect(function() up = true end)
-upBtn.MouseButton1Up:Connect(function() up = false end)
-
-downBtn.MouseButton1Down:Connect(function() down = true end)
-downBtn.MouseButton1Up:Connect(function() down = false end)
+upBtn.MouseButton1Down:Connect(function() up=true end)
+upBtn.MouseButton1Up:Connect(function() up=false end)
+downBtn.MouseButton1Down:Connect(function() down=true end)
+downBtn.MouseButton1Up:Connect(function() down=false end)
 
 game:GetService("RunService").RenderStepped:Connect(function()
     if flying then
-        
         if not bv then
-            bv = Instance.new("BodyVelocity")
+            bv = Instance.new("BodyVelocity", root)
             bv.MaxForce = Vector3.new(9e9,9e9,9e9)
-            bv.Parent = root
         end
 
-        local moveDir = humanoid.MoveDirection
+        local dir = humanoid.MoveDirection
         local y = 0
-
         if up then y = flySpeed end
         if down then y = -flySpeed end
 
-        bv.Velocity = Vector3.new(
-            moveDir.X * flySpeed,
-            y,
-            moveDir.Z * flySpeed
-        )
-
+        bv.Velocity = Vector3.new(dir.X*flySpeed, y, dir.Z*flySpeed)
     else
-        if bv then
-            bv:Destroy()
-            bv = nil
-        end
+        if bv then bv:Destroy() bv=nil end
     end
 end)
 
--- 🚀 TELEPORT
-TeleportTab:CreateButton({
-   Name = "📍 Ir para ponto secreto",
-   Callback = function()
-       root.CFrame = CFrame.new(-25678.73, 32.98, -5880.50)
-   end
-})
+-- AUTO FARM
+task.spawn(function()
+    while true do
+        if autoFarm and pallet and entrega then
+            noclip = true
+
+            root.CFrame = pallet.CFrame
+            task.wait(0.5)
+            pegarTudo()
+
+            root.CFrame = entrega.CFrame
+            task.wait(1)
+            soltar()
+        end
+        task.wait(0.3)
+    end
+end)
+
+-- 🚀 TELEPORTES
+local function tp(cf) root.CFrame = cf end
+
+TeleportTab:CreateButton({Name="Ferro Velho",Callback=function()tp(CFrame.new(-3126,65,-4255))end})
+TeleportTab:CreateButton({Name="Auto Peças",Callback=function()tp(CFrame.new(-3330,65,-3409))end})
+TeleportTab:CreateButton({Name="Drag Race",Callback=function()tp(CFrame.new(-3859,64,-4896))end})
+TeleportTab:CreateButton({Name="Construção Metrópole",Callback=function()tp(CFrame.new(-3645,65,-2509))end})
+TeleportTab:CreateButton({Name="Construção Cidade 2",Callback=function()tp(CFrame.new(-25216,65,-5291))end})
+TeleportTab:CreateButton({Name="Posto",Callback=function()tp(CFrame.new(-3222,66,-3708))end})
+TeleportTab:CreateButton({Name="Concessionária",Callback=function()tp(CFrame.new(-3040,65,-3697))end})
+TeleportTab:CreateButton({Name="Secreto",Callback=function()tp(CFrame.new(-25678,32,-5880))end})
 
 -- UI
-
-MainTab:CreateButton({
-   Name = "📦 Pegar até 20 Caixas",
-   Callback = pegarTudo
-})
-
-MainTab:CreateButton({
-   Name = "🗑️ Soltar Caixas",
-   Callback = soltar
-})
+MainTab:CreateButton({Name="Pegar Caixas",Callback=pegarTudo})
+MainTab:CreateButton({Name="Soltar",Callback=soltar})
 
 MainTab:CreateToggle({
-   Name = "🤖 Auto Farm",
-   CurrentValue = false,
-   Callback = function(v)
-       autoFarm = v
-   end
+   Name="Auto Farm",
+   CurrentValue=false,
+   Callback=function(v) autoFarm=v end
 })
 
 PlayerTab:CreateToggle({
-   Name = "🕊️ Fly Mobile TOTAL",
-   CurrentValue = false,
-   Callback = function(v)
-       flying = v
-   end
+   Name="Fly Mobile",
+   CurrentValue=false,
+   Callback=function(v) flying=v end
 })
 
 PlayerTab:CreateSlider({
-   Name = "🚀 Speed",
-   Range = {50, 1000},
-   Increment = 50,
-   CurrentValue = 800,
-   Callback = function(v)
-       flySpeed = v
-   end
+   Name="Speed",
+   Range={50,1000},
+   Increment=50,
+   CurrentValue=800,
+   Callback=function(v) flySpeed=v end
 })
