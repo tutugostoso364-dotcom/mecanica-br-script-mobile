@@ -25,7 +25,7 @@ end
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Mecânica BR - MOBILE MONEY",
+   Name = "BRAYAN - V3",
    LoadingTitle = "Carregando...",
    LoadingSubtitle = "Full Mobile",
 
