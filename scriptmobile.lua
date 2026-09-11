@@ -33,7 +33,7 @@ local Window = Rayfield:CreateWindow({
    KeySettings = {
       Title = "Key",
       Subtitle = "Digite",
-      Key = {"brayan"}
+      Key = {"mec.br123"}
    }
 })
 
